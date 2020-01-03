@@ -26,11 +26,30 @@ const userSchema = new mongoose.Schema({
 
     tokens:[{
         token:{
-            type:String
+            type:String,
+            required:true
         }
     }]
 
 })
+
+
+
+userSchema.statics.checkCrediantialsDb = async (deepak, deep) => {
+
+    const user1 = await User.findOne({ name: deepak, password: deep })
+    return user1;
+}
+
+userSchema.methods.generateAuthToken = async function () {
+    const user = this
+    const token = jwt.sign({ _id: user._id.toString() }, '4thAssignApi')
+
+    console.log(token);
+    user.tokens = user.tokens.concat({ token: token })
+    await user.save()
+    return token
+}
 
 const User = mongoose.model('Model', userSchema)
 module.exports = User

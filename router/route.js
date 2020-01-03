@@ -12,4 +12,15 @@ router.post('/insert', (req,res)=>{
     res.send("success");
 })
 
+router.post('/login', async function (req, res) {
+    try {
+        const user = await Model.checkCrediantialsDb(req.body.name,
+            req.body.password)
+        const token = await user.generateAuthToken()
+            res.send({ user, token })
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
 module.exports = router

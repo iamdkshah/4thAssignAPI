@@ -23,12 +23,14 @@ const userSchema = new mongoose.Schema({
     dob:{
         type: String
     },
+
     tokens:[{
         token:{
-            type:String,
-            required:true
+            type:String
         }
     }]
 
-    
 })
+
+const User = mongoose.model('Model', userSchema)
+module.exports = User

@@ -23,4 +23,31 @@ router.post('/login', async function (req, res) {
     }
 })
 
+//select
+router.get('/selectusers', auth, function (req, res) {
+    Task.find().then(function (fb_users_data) {
+        res.send(fb_users_data);
+    }).catch(function (e) {
+        res.send(e)
+    });
+})
+
+//delete
+router.delete('/deleteuser/:_id', function (req, res) {
+    Model.findByIdAndDelete(req.params._id).then(function () {
+        res.send("User is Deleted")
+    }).catch(function (e) {
+        res.send(e);
+    });
+})
+
+//update
+router.put('/updateuser/:_id', function (req, res) {
+    Model.findOneAndUpdate({ _id: req.params._id }, req.body).then(function () {
+        res.send("user is updated")
+    }).catch(function (e) {
+        res.send(e)
+    });
+})
+
 module.exports = router

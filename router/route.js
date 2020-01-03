@@ -1,5 +1,6 @@
 const express = require('express')
 const Model = require('../model/user')
+const Model2 = require('../model/postbyuser')
 const bodyParser = require('body-parser')
 const router = new express.Router()
 const auth = require('../middleware/auth')
@@ -48,6 +49,25 @@ router.put('/updateuser/:_id', function (req, res) {
     }).catch(function (e) {
         res.send(e)
     });
+})
+
+//adding post
+router.post('/addpost', (req,res)=>{
+    var fbpostdata = new Model2(req.body);
+    fbpostdata.save().then(function(){
+        res.send("Post succuess");
+    }).catch(function(e){
+        res.send(e)
+    })
+})
+
+//finding post
+router.get('/findpost',(req,res)=>{
+    fbpostdata.find().then(function(findallpost){
+        res.send(findallpost)
+    }).catch(function(e){
+        res.send(e)
+    })
 })
 
 module.exports = router

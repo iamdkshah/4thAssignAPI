@@ -23,11 +23,9 @@ const userSchema = new mongoose.Schema({
     dob:{
         type: String
     },
-
     tokens:[{
         token:{
-            type:String,
-            required:true
+            type:String
         }
     }]
 
@@ -37,7 +35,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics.checkCrediantialsDb = async (deepak, deep) => {
 
-    const user1 = await User.findOne({ name: deepak, password: deep })
+    const user1 = await User.findOne({ email: deepak, password: deep })
     return user1;
 }
 

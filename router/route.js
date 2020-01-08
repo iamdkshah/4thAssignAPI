@@ -4,58 +4,40 @@ const Model2 = require('../model/postbyuser')
 const bodyParser = require('body-parser')
 const router = new express.Router()
 const auth = require('../middleware/auth')
+const imgUpload = require('../multer')
 
 router.use(bodyParser.urlencoded({extended: false}));
 
 router.post('/insert', (req,res)=>{
+    //console.log("in here");
     var fbData = new Model(req.body);
     fbData.save();
-    res.send("success");
+    res.json({message:"success"});
 })
 
 router.post('/login', async function (req, res) {
     try {
-        const user = await Model.checkCrediantialsDb(req.body.name,
+        const user = await Model.checkCrediantialsDb(req.body.email,
             req.body.password)
         const token = await user.generateAuthToken()
             res.send({ user, token })
     } catch (e) {
-        res.status(400).send()
+        res.status(500).send(e)
     }
 })
 
-//select
-router.get('/selectusers', auth, function (req, res) {
-    Task.find().then(function (fb_users_data) {
-        res.send(fb_users_data);
-    }).catch(function (e) {
-        res.send(e)
-    });
-})
-
-//delete
-router.delete('/deleteuser/:_id', function (req, res) {
-    Model.findByIdAndDelete(req.params._id).then(function () {
-        res.send("User is Deleted")
-    }).catch(function (e) {
-        res.send(e);
-    });
-})
-
-//update
-router.put('/updateuser/:_id', function (req, res) {
-    Model.findOneAndUpdate({ _id: req.params._id }, req.body).then(function () {
-        res.send("user is updated")
-    }).catch(function (e) {
-        res.send(e)
-    });
-})
 
 //adding post
-router.post('/addpost', (req,res)=>{
-    var fbpostdata = new Model2(req.body);
-    fbpostdata.save().then(function(){
-        res.send("Post succuess");
+router.post('/addpost', imgUpload, (req,res)=>{
+    req.files.map(function(items){
+        var fbpostdata = new Model2({
+            name: req.body.name,
+            image: req.body.image,
+            status: items.filename
+        })
+        fbpostdata.save().then(function(){
+            res.send("Post succuess");
+        })
     }).catch(function(e){
         res.send(e)
     })
@@ -69,5 +51,7 @@ router.get('/findpost',(req,res)=>{
         res.send(e)
     })
 })
+
+
 
 module.exports = router

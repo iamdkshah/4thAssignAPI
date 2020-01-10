@@ -15,11 +15,13 @@ router.post('/insert', (req,res)=>{
     res.json({message:"success"});
 })
 
+//login
 router.post('/login', async function (req, res) {
     try {
         const user = await Model.checkCrediantialsDb(req.body.email,
             req.body.password)
         const token = await user.generateAuthToken()
+        const name = await user.name
             res.send({ user, token })
     } catch (e) {
         res.status(500).send(e)
@@ -28,30 +30,36 @@ router.post('/login', async function (req, res) {
 
 
 //adding post
-router.post('/addpost', imgUpload, (req,res)=>{
+router.post("/addpost",[imgUpload],(req, res) => {
+    
+    console.log(req.body)
+    console.log(req.files)
     req.files.map(function(items){
-        var fbpostdata = new Model2({
-            name: req.body.name,
-            image: req.body.image,
-            status: items.filename
-        })
-        fbpostdata.save().then(function(){
-            res.send("Post succuess");
-        })
-    }).catch(function(e){
-        res.send(e)
+        const Post = new Model2({
+            status:req.body.status,
+            name:req.body.name,
+            image:items.filename 
+           
+        }
+        
+        )
+            Post.save().then(function( ){
+                res.send("post has been added")
+            }).catch(function(e){
+                res.send(e)
+            })
+
     })
+    
 })
 
 //finding post
-router.get('/findpost',(req,res)=>{
-    fbpostdata.find().then(function(findallpost){
+router.get('/findpost',auth,(req,res)=>{
+    Model2.find().then(function(findallpost){
         res.send(findallpost)
     }).catch(function(e){
         res.send(e)
     })
 })
-
-
 
 module.exports = router

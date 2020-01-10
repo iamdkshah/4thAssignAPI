@@ -17,12 +17,13 @@ router.post('/insert', (req,res)=>{
 
 //login
 router.post('/login', async function (req, res) {
+    console.log('ssk');
     try {
         const user = await Model.checkCrediantialsDb(req.body.email,
             req.body.password)
         const token = await user.generateAuthToken()
         const name = await user.name
-            res.send({ user, token })
+            res.send({ name, token })
     } catch (e) {
         res.status(500).send(e)
     }

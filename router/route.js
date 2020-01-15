@@ -6,6 +6,7 @@ const router = new express.Router()
 const auth = require('../middleware/auth')
 const imgUpload = require('../multer')
 
+
 router.use(bodyParser.urlencoded({extended: false}));
 
 router.post('/insert', (req,res)=>{
@@ -17,10 +18,11 @@ router.post('/insert', (req,res)=>{
 
 //login
 router.post('/login', async function (req, res) {
-    console.log('ssk');
+    // console.log('ssk');
     try {
         const user = await Model.checkCrediantialsDb(req.body.email,
             req.body.password)
+            console.log(user)
         const token = await user.generateAuthToken()
         const name = await user.name
             res.send({ name, token })
